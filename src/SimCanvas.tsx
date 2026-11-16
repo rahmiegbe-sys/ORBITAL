@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { vec } from './physics/vec2'
 import type { Body } from './physics/body'
 import { step } from './physics/integrator'
@@ -32,17 +32,22 @@ function draw(ctx: CanvasRenderingContext2D, bodies: Body[]) {
 
 export default function SimCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const bodiesRef = useRef<Body[]>(initialBodies())
+  const runningRef = useRef(true)
+  const [running, setRunning] = useState(true)
 
   useEffect(() => {
     const ctx = canvasRef.current?.getContext('2d')
     if (!ctx) return
 
-    let bodies = initialBodies()
     let frameId = 0
-
     const frame = () => {
-      for (let s = 0; s < STEPS_PER_FRAME; s++) bodies = step(bodies, DT, G)
-      draw(ctx, bodies)
+      if (runningRef.current) {
+        for (let s = 0; s < STEPS_PER_FRAME; s++) {
+          bodiesRef.current = step(bodiesRef.current, DT, G)
+        }
+      }
+      draw(ctx, bodiesRef.current)
       frameId = requestAnimationFrame(frame)
     }
 
@@ -50,5 +55,22 @@ export default function SimCanvas() {
     return () => cancelAnimationFrame(frameId)
   }, [])
 
-  return <canvas ref={canvasRef} width={800} height={600} />
+  const togglePlay = () => {
+    runningRef.current = !runningRef.current
+    setRunning(runningRef.current)
+  }
+
+  const reset = () => {
+    bodiesRef.current = initialBodies()
+  }
+
+  return (
+    <div>
+      <canvas ref={canvasRef} width={800} height={600} />
+      <div>
+        <button onClick={togglePlay}>{running ? 'Pause' : 'Play'}</button>
+        <button onClick={reset}>Reset</button>
+      </div>
+    </div>
+  )
 }
