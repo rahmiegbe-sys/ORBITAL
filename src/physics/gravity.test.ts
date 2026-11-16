@@ -27,4 +27,13 @@ describe('gravity', () => {
     expect(1 * a1.x + 2 * a2.x).toBeCloseTo(0, 10)
     expect(1 * a1.y + 2 * a2.y).toBeCloseTo(0, 10)
   })
+    test('softening prevents NaN when bodies overlap', () => {
+    const overlap: Body[] = [
+      { pos: vec(1, 1), vel: vec(0, 0), mass: 1 },
+      { pos: vec(1, 1), vel: vec(0, 0), mass: 1 },
+    ]
+    const [a1] = accelerations(overlap, 1, 0.1)
+    expect(Number.isFinite(a1.x)).toBe(true)
+    expect(Number.isFinite(a1.y)).toBe(true)
+  })
 })
