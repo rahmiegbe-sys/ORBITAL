@@ -1,19 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
-import { vec } from './physics/vec2'
 import type { Body } from './physics/body'
 import { step } from './physics/integrator'
+import { PRESETS } from './physics/presets'
 
 const G = 1
 const DT = 0.002          // fixed physics time step
 const STEPS_PER_FRAME = 10
 const SCALE = 150         // pixels per 1 unit of distance
-
-function initialBodies(): Body[] {
-  return [
-    { pos: vec(0, 0), vel: vec(0, 0), mass: 1 },
-    { pos: vec(1, 0), vel: vec(0, 1), mass: 1e-6 },
-  ]
-}
 
 function draw(ctx: CanvasRenderingContext2D, bodies: Body[]) {
   const w = ctx.canvas.width
@@ -32,9 +25,11 @@ function draw(ctx: CanvasRenderingContext2D, bodies: Body[]) {
 
 export default function SimCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const bodiesRef = useRef<Body[]>(initialBodies())
+  const presetRef = useRef(0)
+  const bodiesRef = useRef<Body[]>(PRESETS[0].create())
   const runningRef = useRef(true)
   const [running, setRunning] = useState(true)
+  const [presetIndex, setPresetIndex] = useState(0)
 
   useEffect(() => {
     const ctx = canvasRef.current?.getContext('2d')
@@ -61,13 +56,24 @@ export default function SimCanvas() {
   }
 
   const reset = () => {
-    bodiesRef.current = initialBodies()
+    bodiesRef.current = PRESETS[presetRef.current].create()
+  }
+
+  const choosePreset = (i: number) => {
+    presetRef.current = i
+    setPresetIndex(i)
+    bodiesRef.current = PRESETS[i].create()
   }
 
   return (
     <div>
       <canvas ref={canvasRef} width={800} height={600} />
       <div>
+        <select value={presetIndex} onChange={(e) => choosePreset(Number(e.target.value))}>
+          {PRESETS.map((p, i) => (
+            <option key={p.name} value={i}>{p.name}</option>
+          ))}
+        </select>
         <button onClick={togglePlay}>{running ? 'Pause' : 'Play'}</button>
         <button onClick={reset}>Reset</button>
       </div>
