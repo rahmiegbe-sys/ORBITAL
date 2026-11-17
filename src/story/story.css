@@ -1,7 +1,18 @@
-/* ORBITAL story page. Fixed 3D canvas behind, scrolling text in front. */
+/* ORBITAL story page.
+   Type system ("Observatory"): Space Grotesk for display and statements,
+   Manrope for reading, IBM Plex Mono for labels and numbers, KaTeX for maths. */
 :root {
-  --serif: 'Instrument Serif', 'Times New Roman', serif;
+  --display: 'Space Grotesk', 'Segoe UI', sans-serif;
+  --sans: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  --ink: #f4f0fa;
+  --ink-soft: rgba(236, 232, 250, 0.74);
+  --ink-faint: rgba(236, 232, 250, 0.45);
+  --hair: rgba(236, 232, 250, 0.14);
   --sun: #ffb36b;
+  --euler: #ff7a59;
+  --verlet: #8fb6ff;
+  --gutter: clamp(16px, 6vw, 112px);
 }
 
 html.lenis,
@@ -15,8 +26,10 @@ html.lenis body {
 body {
   background: #020308;
   overflow-x: hidden;
+  font-family: var(--sans);
 }
 
+/* ---------- Fixed layers ---------- */
 .story-canvas {
   position: fixed !important;
   inset: 0;
@@ -24,55 +37,111 @@ body {
   height: 100svh !important;
   z-index: 0;
 }
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(120% 90% at 50% 45%, rgba(2, 3, 8, 0.94), #020308);
+}
+/* Static film grain: one small SVG noise tile, no animation. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
 
 .story {
   position: relative;
-  z-index: 1;
-  color: var(--text-strong);
+  z-index: 2;
+  color: var(--ink);
 }
 
-/* ---------- Hero ---------- */
+/* ---------- Type roles ---------- */
+.t-label {
+  margin: 0 0 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 214, 180, 0.72);
+}
+.t-heading {
+  margin: 0 0 28px;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(40px, 5.2vw, 76px);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+.t-statement {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(28px, 3.7vw, 54px);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.t-body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: clamp(16px, 1.2vw, 18px);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+.t-annotation {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  color: var(--ink-faint);
+}
+.t-mono-body {
+  font-family: var(--mono);
+  font-size: clamp(14px, 1.05vw, 16px);
+}
+.t-numeric {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.line {
+  padding-bottom: 0.06em; /* room for descenders inside SplitText masks */
+}
+
+/* ---------- Act I: hero ---------- */
 .hero {
   position: relative;
   min-height: 100svh;
   display: flex;
   align-items: center;
-  padding: 0 clamp(16px, 7vw, 120px);
+  padding: 0 var(--gutter);
 }
-
 .hero-copy {
-  max-width: 560px;
+  max-width: 600px;
 }
-
-.eyebrow {
-  margin: 0 0 18px;
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: rgba(255, 220, 190, 0.7);
-}
-
 .hero-title {
   margin: 0;
-  font-family: var(--serif);
-  font-weight: 400;
-  font-size: clamp(64px, 13vw, 184px);
-  line-height: 0.88;
-  letter-spacing: -0.02em;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(64px, 12.5vw, 184px);
+  line-height: 0.86;
+  letter-spacing: 0.015em;
   color: #fff6ec;
-  text-shadow: 0 0 60px rgba(255, 140, 60, 0.25);
 }
-
 .hero-sub {
-  margin: 26px 0 0;
-  max-width: 420px;
-  font-size: clamp(16px, 1.6vw, 19px);
-  font-weight: 300;
-  line-height: 1.6;
-  color: rgba(236, 232, 250, 0.78);
+  margin-top: 28px;
+  max-width: 400px;
 }
-
 .scroll-cue {
   position: absolute;
   left: 50%;
@@ -86,7 +155,7 @@ body {
   font-size: 10px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(236, 232, 250, 0.5);
+  color: var(--ink-faint);
 }
 .scroll-cue i {
   width: 1px;
@@ -101,65 +170,644 @@ body {
   100% { transform: scaleY(1); opacity: 0; }
 }
 
-/* ---------- Text beats ---------- */
-.chapter {
-  padding: 20svh clamp(16px, 7vw, 120px) 30svh;
+/* ---------- Prologue ---------- */
+.prologue {
+  padding: 30svh var(--gutter) 40svh;
+  display: grid;
+  gap: 40svh;
+}
+.prologue {
+  position: relative;
+}
+.prologue .t-statement {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  text-shadow: 0 2px 40px rgba(2, 3, 8, 0.95);
+}
+.bodies {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.body {
+  position: absolute;
+  height: auto;
+  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.6));
+  will-change: transform;
+}
+.body-giant {
+  width: clamp(200px, 27vw, 380px);
+  right: 8%;
+  top: 14%;
+}
+.body-rocky {
+  width: clamp(140px, 18vw, 260px);
+  left: 3%;
+  top: 66%;
+}
+.body-terra {
+  width: clamp(90px, 10vw, 150px);
+  right: 30%;
+  top: 72%;
+}
+.illustration-note {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  text-align: right;
+}
+.prologue .t-statement:nth-of-type(2) {
+  margin-left: 22%;
 }
 
-.beat {
+/* ---------- Shared act layout ---------- */
+.act {
+  position: relative;
+}
+
+/* ---------- Act II: the law ---------- */
+.law {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: 10svh var(--gutter);
+}
+.law-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(28px, 6vw, 96px);
+  align-items: center;
+}
+.equation {
+  margin: 0 0 36px;
+  font-size: clamp(20px, 2.4vw, 34px);
+  color: var(--ink);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.equation .katex-display {
+  margin: 0;
+  text-align: left;
+}
+.equation .katex-display > .katex {
+  text-align: left;
+}
+.law-captions {
+  display: grid;
+  min-height: 140px;
+}
+.law-caption {
+  grid-area: 1 / 1;
+  max-width: 480px;
+}
+.law-figure {
+  margin: 0;
+}
+.law-figure svg {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  overflow: visible;
+}
+.d-grid {
+  fill: none;
+  stroke: rgba(236, 232, 250, 0.06);
+  stroke-width: 1;
+}
+.d-axis {
+  stroke: rgba(236, 232, 250, 0.22);
+  stroke-width: 1;
+}
+.d-vec,
+.d-unit,
+.d-acc {
+  stroke-dasharray: 1;
+  stroke-linecap: round;
+}
+.d-vec {
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+.d-unit {
+  stroke: var(--sun);
+  stroke-width: 3;
+}
+.d-acc {
+  stroke: var(--verlet);
+  stroke-width: 2;
+}
+.d-head-vec {
+  fill: var(--ink);
+}
+.d-head-unit {
+  fill: var(--sun);
+}
+.d-head-acc {
+  fill: var(--verlet);
+}
+.d-body {
+  fill: #fff2df;
+  filter: drop-shadow(0 0 6px rgba(255, 180, 110, 0.7));
+}
+.d-name,
+.d-label {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  fill: var(--ink-soft);
+}
+.d-label-unit {
+  fill: var(--sun);
+}
+.d-label-acc {
+  fill: var(--verlet);
+}
+.d-calc {
+  margin-top: 18px;
+  display: grid;
+  gap: 4px;
+  color: var(--ink-soft);
+}
+.d-calc span {
+  color: var(--ink-faint);
+}
+
+/* ---------- Act III: the method ---------- */
+.mechanism {
+  min-height: 100svh;
+  padding: 9svh var(--gutter) 6svh;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  grid-template-rows: 1fr auto;
+  column-gap: clamp(28px, 5vw, 80px);
+  align-items: center;
+}
+.mech-captions {
+  display: grid;
+  min-height: 170px;
+}
+.mech-caption {
+  grid-area: 1 / 1;
+  max-width: 440px;
+}
+.mech-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.mech-panel,
+.mech-graph {
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  background: rgba(8, 10, 18, 0.55);
+  backdrop-filter: blur(8px);
+}
+.mech-panel figcaption,
+.mech-graph figcaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.mech-panel figcaption .t-label,
+.mech-graph figcaption.t-label {
+  margin: 0;
+}
+.mech-panel svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 8px;
+}
+.mech-panel.euler {
+  border-color: color-mix(in srgb, var(--euler) calc(var(--drift, 0) * 70%), var(--hair));
+}
+.mech-panel.euler .t-numeric {
+  color: color-mix(in srgb, var(--euler) calc(var(--drift, 0) * 100%), var(--ink));
+}
+.mech-panel.verlet {
+  --focus: 0;
+  border-color: color-mix(in srgb, var(--verlet) calc(var(--focus) * 60%), var(--hair));
+}
+.m-ring {
+  fill: none;
+  stroke: rgba(236, 232, 250, 0.16);
+  stroke-dasharray: 2 4;
+}
+.m-star {
+  fill: #ffe4c2;
+}
+.m-path {
+  fill: none;
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+}
+.m-path.euler,
+.g-line.euler {
+  stroke: var(--euler);
+}
+.m-path.verlet,
+.g-line.verlet {
+  stroke: var(--verlet);
+}
+.m-dot.euler {
+  fill: var(--euler);
+}
+.m-dot.verlet {
+  fill: var(--verlet);
+}
+.mech-graph {
+  grid-column: 1 / -1;
+}
+.mech-graph svg {
+  width: 100%;
+  height: 120px;
+  display: block;
+  margin-top: 10px;
+}
+.g-grid {
+  stroke: rgba(236, 232, 250, 0.07);
+  vector-effect: non-scaling-stroke;
+}
+.g-line {
+  fill: none;
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+}
+.g-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+.mech-source {
+  grid-column: 1 / -1;
+  margin: 18px 0 0;
+}
+
+/* ---------- Act IV: the system ---------- */
+.system {
+  min-height: 420svh;
+  padding: 0 var(--gutter);
+}
+.sys-intro {
+  padding-top: 30svh;
   min-height: 70svh;
+}
+.sys-beat {
+  min-height: 80svh;
   display: flex;
   align-items: center;
 }
-
-.beat-text {
+.sys-beat p {
+  max-width: 640px;
+  text-shadow: 0 2px 30px rgba(2, 3, 8, 0.9);
+}
+.hud {
+  position: sticky;
+  bottom: 24px;
+  margin: 0 0 24px auto;
+  width: min(300px, 100%);
+  padding: 16px 18px;
+  border: 1px solid var(--hair);
+  border-radius: 12px;
+  background: rgba(4, 6, 12, 0.6);
+  backdrop-filter: blur(10px);
+}
+.hud-live {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-soft);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 10.5px;
+}
+.hud-live i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--good);
+  box-shadow: 0 0 8px var(--good);
+}
+.hud dl {
+  margin: 12px 0 0;
+  display: grid;
+  gap: 4px;
+}
+.hud dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.hud dt {
+  color: var(--ink-faint);
+}
+.hud dd {
   margin: 0;
-  max-width: 760px;
-  font-family: var(--serif);
-  font-size: clamp(30px, 4.4vw, 60px);
-  line-height: 1.12;
-  color: #fbf6ff;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
 }
-.beat-text.dim {
-  color: rgba(236, 232, 250, 0.45);
-  font-style: italic;
+.hud-note {
+  margin: 12px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--hair);
 }
 
-/* ---------- Footer ---------- */
-.story-foot {
-  min-height: 50svh;
+/* ---------- Act V: identity ---------- */
+.identity {
+  min-height: 440svh;
+}
+.identity-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
   display: grid;
   place-items: center;
+  padding: 0 var(--gutter);
 }
-
+.identity-veil {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(60% 55% at 50% 50%, rgba(2, 3, 8, 0.25), rgba(2, 3, 8, 0.9));
+  pointer-events: none;
+}
+.identity-stage > .finale-forces,
+.identity-stage > .finale-math,
+.identity-stage > .identity-inner {
+  grid-area: 1 / 1;
+}
+.finale-forces {
+  align-self: end;
+  justify-self: start;
+  max-width: 620px;
+  margin-bottom: 9svh;
+}
+.finale-forces .t-statement {
+  font-size: clamp(22px, 2.4vw, 36px);
+  text-shadow: 0 2px 30px rgba(2, 3, 8, 0.95);
+}
+.finale-legend {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 18px 0 0;
+}
+.finale-legend i {
+  flex: none;
+  width: 22px;
+  height: 2px;
+  background: #ffc98a;
+  position: relative;
+}
+.finale-legend i::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: -3px;
+  border-left: 6px solid #ffc98a;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+.finale-math {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 26px;
+  padding: 34px clamp(18px, 4vw, 48px);
+  border-radius: 20px;
+  background: radial-gradient(closest-side, rgba(2, 3, 8, 0.82), rgba(2, 3, 8, 0));
+}
+.finale-law {
+  font-size: clamp(22px, 3vw, 42px);
+  color: var(--ink);
+}
+.finale-law .katex-display {
+  margin: 0;
+}
+.finale-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  font-size: clamp(15px, 1.5vw, 21px);
+  color: var(--ink-soft);
+}
+.finale-step {
+  display: grid;
+  grid-template-columns: 92px auto;
+  align-items: baseline;
+  gap: 16px;
+}
+.finale-step .t-annotation {
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 10.5px;
+  color: rgba(255, 214, 180, 0.7);
+}
+.finale-note {
+  margin: 0;
+  max-width: 460px;
+  text-align: center;
+  color: var(--ink-soft);
+}
+.identity-inner {
+  position: relative;
+  text-align: center;
+  display: grid;
+  justify-items: center;
+}
+.wordmark-xl {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(64px, 15vw, 236px);
+  line-height: 0.85;
+  letter-spacing: 0.025em;
+  color: #fff6ec;
+}
+.wordmark-xl .char {
+  display: inline-block;
+}
+.identity-rule {
+  width: min(320px, 60vw);
+  height: 1px;
+  margin: 30px 0 26px;
+  background: linear-gradient(90deg, transparent, rgba(255, 214, 180, 0.6), transparent);
+}
+.identity-line {
+  max-width: 620px;
+  font-size: clamp(22px, 2.6vw, 34px);
+  color: var(--ink-soft);
+}
+.identity-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 36px;
+}
+.identity-meta {
+  margin: 28px 0 0;
+}
 .cta {
-  padding: 14px 28px;
+  padding: 13px 26px;
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 999px;
-  color: var(--text-strong);
+  color: var(--ink);
   text-decoration: none;
   font-size: 14px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   backdrop-filter: blur(6px);
-  transition: background 0.2s, border-color 0.2s;
+  transition: background 0.25s, border-color 0.25s, color 0.25s;
 }
 .cta:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.5);
+}
+.cta.primary {
+  background: #fff3e4;
+  border-color: #fff3e4;
+  color: #120a04;
+}
+.cta.primary:hover {
+  background: #ffffff;
 }
 .cta:focus-visible {
   outline: 2px solid var(--switch-on);
   outline-offset: 3px;
 }
 
+/* ---------- Tablet and phone ---------- */
+@media (max-width: 900px) {
+  .law-grid,
+  .mechanism {
+    grid-template-columns: 1fr;
+  }
+  .law {
+    align-items: flex-start;
+  }
+  .law-figure svg {
+    max-width: 360px;
+  }
+  .mechanism {
+    align-content: center;
+    row-gap: 18px;
+  }
+  .mech-captions {
+    min-height: 120px;
+  }
+}
+
 @media (max-width: 640px) {
+  .finale-step {
+    grid-template-columns: 1fr;
+    gap: 2px;
+    justify-items: center;
+  }
+  .finale-step .t-annotation {
+    text-align: center;
+  }
+  .finale-math {
+    gap: 18px;
+  }
   .hero {
     align-items: flex-end;
     padding-bottom: 18svh;
   }
+  .prologue .t-statement:nth-of-type(2) {
+    text-align: left;
+  }
+  .body-giant {
+    right: -12%;
+  }
+  .body-rocky {
+    left: -10%;
+  }
+  .law {
+    align-items: center;
+    padding-top: 4svh;
+    padding-bottom: 4svh;
+  }
+  .t-heading {
+    margin-bottom: 16px;
+  }
+  .equation {
+    margin-bottom: 18px;
+  }
+  .law-captions {
+    min-height: 120px;
+  }
+  .law-figure svg {
+    max-width: 230px;
+  }
+  .law-grid {
+    gap: 14px;
+  }
+  .equation {
+    font-size: 19px;
+  }
+  .d-calc {
+    margin-top: 8px;
+    font-size: 10.5px;
+  }
+  .d-calc span {
+    display: none;
+  }
+  .mech-panel figcaption {
+    flex-direction: column;
+    gap: 2px;
+  }
+  .mechanism {
+    padding-top: 6svh;
+  }
+  .mech-panels {
+    gap: 10px;
+  }
+  .mech-panel,
+  .mech-graph {
+    padding: 10px;
+  }
+  .mech-graph svg {
+    height: 70px;
+  }
+  .mech-captions {
+    min-height: 100px;
+  }
+  .mech-captions .t-body {
+    font-size: 14.5px;
+  }
+  .hud {
+    width: 100%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Everything that is staged by scroll is shown statically, in order. */
+  .law-caption,
+  .mech-caption {
+    grid-area: auto;
+    margin-bottom: 14px;
+  }
+  .identity {
+    min-height: auto;
+  }
+  .identity-stage {
+    position: relative;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12vh;
+    padding: 20vh var(--gutter);
+  }
+  .finale-forces {
+    display: none;
+  }
   .scroll-cue i {
     animation: none;
   }

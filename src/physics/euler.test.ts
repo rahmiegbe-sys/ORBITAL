@@ -1,18 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import type { Body } from './body'
-import { accelerations } from './gravity'
-import { add, scale, sub, length, vec } from './vec2'
+import { sub, length, vec } from './vec2'
 import { step } from './integrator'
+import { eulerStep } from './euler'
 import { totalEnergy } from './energy'
-
-function eulerStep(bodies: Body[], dt: number, G: number): Body[] {
-  const a = accelerations(bodies, G)
-  return bodies.map((b, i) => ({
-    pos: add(b.pos, scale(b.vel, dt)),
-    vel: add(b.vel, scale(a[i], dt)),
-    mass: b.mass,
-  }))
-}
 
 // Sun (mass 1) + tiny planet at distance 1, speed 1: circular orbit, period 2π
 function sunAndPlanet(): Body[] {
