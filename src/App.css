@@ -5,6 +5,40 @@
   padding: 24px 16px 40px;
 }
 
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 4px 12px;
+}
+.story-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--text-strong);
+  font-size: 13px;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.story-link svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s;
+}
+.story-link:hover {
+  background: #141724;
+  border-color: #3b4057;
+}
+.story-link:hover svg {
+  transform: translateX(2px);
+}
+.story-link:focus-visible {
+  outline: 2px solid var(--switch-on);
+  outline-offset: 2px;
+}
+
 .footnote {
   margin: 14px 4px 0;
   font-size: 12px;
