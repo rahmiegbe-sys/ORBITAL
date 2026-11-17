@@ -1,18 +1,24 @@
 # ORBITAL
 
-**An interactive 2D Newtonian N-body gravity simulator**, built from first principles with React, TypeScript and HTML5 Canvas.
-
-ORBITAL simulates how stars and planets move under their mutual gravity. The physics runs in two dimensions; the bodies are rendered with 3D-style shading (limb-darkened stars, planets lit by their nearest star), so it reads like a window into space while staying an honest numerical model.
-
 > Live demo: _coming soon_
+
+Orbital is an interactive 2D Newtonian N-body gravity simulator, built from first principles with React and TypeScript and drawn on HTML5 Canvas. It is 2D physics drawn with 3D-style shading. Orbital simulates gravity's effect on celestial bodies (stars and planets) as time changes.
+
+Each body's acceleration at a given time depends on where the other bodies are at that moment. For this reason, the velocity and position change continuously with time. From Newton's law of gravitation, we use the formula for force to get accelerations. Through Velocity Verlet, we take a really small step in time, Δt, which helps us get new positions and velocities, and the process is repeated. Only the acceleration is gotten purely mathematically, so it is exact. The position and velocity are approximated because, as accurate as Velocity Verlet can be, there is a minor accumulation of errors.
+
+To interact with it, you select a model from the three available. Then set a time warp that shows you what happens over a long period of time in the model, but in seconds in real time. That way, you can observe how the bodies move over a long period in just a short time. Below the simulation, a stats strip shows the elapsed time, energy drift, momentum drift, precision and frame rate.
+
+The physics engine is responsible for the mathematical calculations behind the visual rendering. On the other hand, the visual rendering draws these bodies and their positions with 3D-style shading. It doesn't change positions; it only reads them.
 
 ---
 
 ## Why I built it
 
-ORBITAL shows how celestial bodies interact through gravitational forces. Each body's acceleration depends on where every other body is at that moment, so its velocity and position change continuously with time. There is no simple formula for where three bodies will be in a hundred years — so instead we use calculus to *step* the motion forward through time, a little at a time, and build the answer numerically.
+Watching the Netflix series 3 Body Problem fascinated me. Three bodies moving under each other's gravity can look simple to the eye. Through analysis it becomes far more unpredictable. I wanted to translate my curiosity into a visual representation that helps people understand the effects of gravity. A simulator lets me do that while being backed up by accurate code and mathematics.
 
-What still amazes me is that a differential equation can tell us so much — enough to predict an orbit, check our own accuracy and build further equations from it — without us ever writing down its exact solution.
+Although a three-body system is chaotic there are rare solutions. The figure-eight preset models one of them. It shows how these bodies can move and still be predicted. The prediction may not be perfect but it is accurate enough for observation and study.
+
+By the end I hope to become very familiar with how far calculus can take us. I want to explore how long a prediction stays trustworthy before the errors from each time step grow too large. I also hope to stumble onto a new possibility. Maybe three-body problems can be modelled differently to find other solutions for long-term observation.
 
 ## The physics
 
@@ -77,34 +83,36 @@ npx vitest run src/physics/euler.test.ts --silent=false
 
 ## How I know it's correct
 
-Passing tests don't automatically prove the physics is right, so the tests compare the simulation against things physics already tells us:
+A simulator also shows visuals. It might be right in code but wrong visually, and code that runs without errors can still give the wrong physics. So the tests compare the simulation against things physics already tells us, such as my own hand calculation, the conservation of energy and momentum, and known orbital periods:
 
 | Test | What it checks |
 |---|---|
 | Two-body acceleration | Matches my hand calculation (a₁ = (0.048, 0.064)) to 10 decimal places |
 | Newton's third law | m₁a₁ + m₂a₂ = 0 |
 | Softening | Overlapping bodies give finite numbers, not NaN |
-| Energy conservation | Relative energy error < 10⁻⁶ after 10 orbits |
-| Orbital period | A circular orbit returns to its start after exactly 2π |
-| Binary star | Two equal stars stay exactly 1 AU apart |
-| Figure-eight | Three stars return to their starting positions after the published period (T ≈ 6.3259) |
-| Momentum | Every preset starts at zero total momentum and stays there |
+| Energy conservation | Relative energy error stays below 10⁻⁶ after 10 orbits |
+| Orbital period | A circular orbit returns to its start after one period of 2π, to 3 decimal places |
+| Binary star | Two equal stars stay 1 AU apart to 4 decimal places at every one of 20,000 steps |
+| Figure-eight | Three stars return within 0.0001 of their starting positions after the published period (T ≈ 6.3259) |
+| Momentum | Every preset starts with total momentum below 10⁻⁷, and it stays below 10⁻⁹ while the figure-eight runs |
+| Euler vs. Verlet | Euler gains over 30% energy and spirals out, while Verlet's energy error never rises above 10⁻⁸ |
 | Time warp | Big time jumps are split into steps that cover the time exactly |
 
-The app also shows **energy drift** and **momentum drift** live, so the accuracy is visible while it runs — not just claimed.
+The app also shows energy drift and momentum drift live. This shows the model's accuracy at any given time. Energy and momentum should stay exactly constant, so the drift shows just how far the numbers are from the exact physics while it runs.
 
 ## Features
 
-- **Presets:** Sun and Earth (real mass ratio), binary star, and the Chenciner–Montgomery figure-eight three-body orbit (2000)
+- **Presets:** Sun and Earth with the real mass ratio, a binary star, and the Chenciner–Montgomery figure-eight three-body orbit (2000)
 - **Time warp** from 1 day/s to 1 century/s, with an elapsed-time clock in days, months, years and centuries
-- **Honest accuracy readout:** at extreme speeds the computer can't keep Δt small, so the *Precision* indicator and energy drift show the trade-off between speed and accuracy
-- Fading orbit trails, play / pause / reset, and a layout that works on phones
+- **Accuracy readout:** at extreme speeds the computer can't keep Δt small, so the Precision indicator and energy drift show the trade-off between speed and accuracy
+- **Live stats:** elapsed time, energy drift, momentum drift, precision and frame rate
+- Fading orbit trails, play, pause and reset, and a layout that works on phones
 
 ## Project structure
 
 ```
 src/
-├─ physics/     pure maths and physics — no drawing code, fully tested
+├─ physics/     pure maths and physics, no drawing code, fully tested
 │  ├─ vec2.ts         2D vector operations
 │  ├─ gravity.ts      pairwise gravitational acceleration (+ softening)
 │  ├─ integrator.ts   Velocity Verlet step
@@ -130,9 +138,11 @@ npm test           # run the test suite once
 
 ## What I learned
 
-- How a differential equation becomes an algorithm, and why the *choice* of algorithm changes the physics you get out.
-- That models are built on deliberate assumptions — point masses, perfect spheres, tiny step errors — and part of engineering is knowing which ones are safe and checking them.
-- That conserved quantities like energy and momentum let you test a simulation without knowing the exact answer.
+The biggest thing I learned has to be calculus on a deeper level. Learning that precalculus and Calculus 1 have applications that can be used to derive predictions of the laws governing the universe is amazing. I also loved learning about Euler's method conceptually, seeing how it was improved and then building a real-time application to model it. Predicting how a function will behave over time without knowing its exact solution is a clever way to study phenomena in our universe that have their roots in rates of change. It is exciting to see my rough notes on ODEs leave the page and become working code a computer understands. That code does repeated calculations with principles that allow us to model reality.
+
+Creating this also taught me that a system working in code doesn't always translate to smooth visual rendering.
+
+All in all, what surprised me the most was finding out that there are actually three-body problems with solutions. Although they are rare, they still exist.
 
 ## Built with
 
