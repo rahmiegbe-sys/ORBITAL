@@ -1,6 +1,6 @@
 # ORBITAL
 
-**Live demo: [orbital-mu-three.vercel.app](https://orbital-mu-three.vercel.app)**
+**Live demo: [orbital-nbody.vercel.app](https://orbital-nbody.vercel.app)**
 
 ![Three equal stars tracing the Chenciner–Montgomery figure-eight orbit in ORBITAL](docs/figure-eight.jpg)
 
