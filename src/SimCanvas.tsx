@@ -42,7 +42,7 @@ function freshState(presetIndex: number): SimState {
   }
 }
 
-const ZERO_STATS: Stats = { years: 0, energyDrift: 0, momentumDrift: 0, dt: BASE_DT }
+const ZERO_STATS: Stats = { years: 0, energyDrift: 0, momentumDrift: 0, dt: BASE_DT, fps: 0 }
 
 export default function SimCanvas() {
   const wrapRef = useRef<HTMLDivElement>(null)
@@ -87,10 +87,19 @@ export default function SimCanvas() {
     let frameId = 0
     let frameCount = 0
     let last = performance.now()
+        let fpsFrames = 0
+    let fpsWindowStart = performance.now()
+    let fps = 0
 
     const frame = (now: number) => {
       const frameSeconds = Math.min((now - last) / 1000, MAX_FRAME_SECONDS)
       last = now
+            fpsFrames++
+      if (now - fpsWindowStart >= 500) {
+        fps = (fpsFrames * 1000) / (now - fpsWindowStart)
+        fpsFrames = 0
+        fpsWindowStart = now
+      }
       const s = simRef.current
 
       if (runningRef.current) {
@@ -127,6 +136,7 @@ export default function SimCanvas() {
           energyDrift: Math.abs((totalEnergy(s.bodies, G) - s.e0) / s.e0),
           momentumDrift: length(sub(totalMomentum(s.bodies), s.p0)),
           dt: s.dt,
+                    fps,
         })
       }
 

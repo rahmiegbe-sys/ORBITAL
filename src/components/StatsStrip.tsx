@@ -1,7 +1,7 @@
 import { formatElapsed } from '../physics/units'
 import { precisionFor } from '../physics/timeWarp'
 
-export type Stats = { years: number; energyDrift: number; momentumDrift: number; dt: number }
+export type Stats = { years: number; energyDrift: number; momentumDrift: number; dt: number; fps: number }
 
 // Traffic-light status: green = accurate, amber = slipping, red = inaccurate.
 function energyStatus(drift: number) {
@@ -38,6 +38,10 @@ export default function StatsStrip({ stats }: { stats: Stats }) {
           <span className={`dot ${PRECISION_STATUS[precision]}`} />
           {PRECISION_TEXT[precision]} · Δt {stats.dt.toFixed(4)}
         </dd>
+      </div>
+            <div className="stat">
+        <dt>Frame rate</dt>
+        <dd>{Math.round(stats.fps)} fps</dd>
       </div>
     </dl>
   )
