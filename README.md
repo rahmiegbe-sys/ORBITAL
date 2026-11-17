@@ -1,6 +1,8 @@
 # ORBITAL
 
-> Live demo: _coming soon_
+**Live demo: [orbital-mu-three.vercel.app](https://orbital-mu-three.vercel.app)**
+
+![Three equal stars tracing the Chenciner–Montgomery figure-eight orbit in ORBITAL](docs/figure-eight.jpg)
 
 Orbital is an interactive 2D Newtonian N-body gravity simulator, built from first principles with React and TypeScript and drawn on HTML5 Canvas. It is 2D physics drawn with 3D-style shading. Orbital simulates gravity's effect on celestial bodies (stars and planets) as time changes.
 
