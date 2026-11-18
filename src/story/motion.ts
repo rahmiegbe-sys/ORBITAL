@@ -18,13 +18,21 @@ export const STAGGER = { chars: 0.025, words: 0.04, lines: 0.09 } as const
 // Lines rise out of a mask, one after another, when the element scrolls in.
 export function revealLines(el: Element, opts: { start?: string } = {}) {
   if (reducedMotion) return
-  const split = SplitText.create(el, { type: 'lines', mask: 'lines', linesClass: 'line' })
-  gsap.from(split.lines, {
-    yPercent: 110,
-    duration: DUR.base,
-    ease: EASE.out,
-    stagger: STAGGER.lines,
-    scrollTrigger: { trigger: el, start: opts.start ?? 'top 80%', toggleActions: 'play none none reverse' },
+  // autoSplit re-splits when web fonts finish loading or the width changes,
+  // so line breaks always match the real text; onSplit rebuilds the reveal.
+  SplitText.create(el, {
+    type: 'lines',
+    mask: 'lines',
+    linesClass: 'line',
+    autoSplit: true,
+    onSplit: (self) =>
+      gsap.from(self.lines, {
+        yPercent: 110,
+        duration: DUR.base,
+        ease: EASE.out,
+        stagger: STAGGER.lines,
+        scrollTrigger: { trigger: el, start: opts.start ?? 'top 80%', toggleActions: 'play none none reverse' },
+      }),
   })
 }
 

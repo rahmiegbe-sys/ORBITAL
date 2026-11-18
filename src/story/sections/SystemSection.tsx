@@ -62,7 +62,7 @@ export default function SystemSection() {
   return (
     <section className="act system" ref={root} aria-labelledby="sys-title">
       <div className="sys-intro">
-        <p className="t-label">Act IV</p>
+        <p className="t-label">Act VII</p>
         <h2 id="sys-title" className="t-heading">The system</h2>
       </div>
       {BEATS.map((b, i) => (

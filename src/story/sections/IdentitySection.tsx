@@ -73,7 +73,7 @@ export default function IdentitySection() {
         <div className="identity-veil" aria-hidden="true" />
 
         <div className="finale-forces">
-          <p className="t-label">Act V</p>
+          <p className="t-label">Act VIII</p>
           {/* Rhema's own sentence from the README introduction. */}
           <p className="t-statement">From Newton's law of gravitation, we use the formula for force to get accelerations.</p>
           <p className="t-annotation finale-legend">

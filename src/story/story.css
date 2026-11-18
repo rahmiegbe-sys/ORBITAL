@@ -133,14 +133,14 @@ body {
   margin: 0;
   font-family: var(--display);
   font-weight: 700;
-  font-size: clamp(64px, 12.5vw, 184px);
+  font-size: clamp(60px, 10.5vw, 164px);
   line-height: 0.86;
   letter-spacing: 0.015em;
   color: #fff6ec;
 }
 .hero-sub {
   margin-top: 28px;
-  max-width: 400px;
+  max-width: 460px;
 }
 .scroll-cue {
   position: absolute;
@@ -447,7 +447,271 @@ body {
   margin: 18px 0 0;
 }
 
-/* ---------- Act IV: the system ---------- */
+/* ---------- Act IV: three bodies ---------- */
+.threebody {
+  min-height: 100svh;
+  padding: 9svh var(--gutter) 6svh;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  grid-template-rows: 1fr auto;
+  column-gap: clamp(28px, 5vw, 80px);
+  align-items: center;
+}
+.tb-captions {
+  display: grid;
+  min-height: 220px;
+}
+.tb-caption {
+  grid-area: 1 / 1;
+  max-width: 520px;
+  font-size: clamp(24px, 2.7vw, 40px);
+}
+.tb-figure {
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+.tb-canvas {
+  width: 100%;
+  aspect-ratio: 2.4 / 1;
+  display: block;
+}
+.tb-readout {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: space-between;
+  gap: 8px 20px;
+  padding: 14px 16px;
+  border: 1px solid var(--hair);
+  border-radius: 12px;
+  background: rgba(8, 10, 18, 0.55);
+}
+.tb-readout div {
+  display: grid;
+  gap: 2px;
+}
+.tb-source {
+  grid-column: 1 / -1;
+  margin: 18px 0 0;
+}
+
+/* ---------- Act V: validation (calm) ---------- */
+.validation {
+  padding: 22svh var(--gutter) 16svh;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.val-intro {
+  max-width: 640px;
+  display: grid;
+  gap: 16px;
+  margin-bottom: 56px;
+}
+.val-intro .t-heading {
+  margin-bottom: 8px;
+}
+.val-table {
+  border-top: 1px solid var(--hair);
+}
+.val-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr) minmax(0, 1fr) 90px;
+  gap: 16px;
+  align-items: baseline;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.val-head {
+  padding: 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 10.5px;
+}
+.val-name {
+  display: grid;
+  gap: 3px;
+}
+.val-title {
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.val-limit {
+  color: var(--ink-faint);
+}
+.val-result {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.val-result i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.val-result.ok {
+  color: var(--good);
+}
+.val-result.ok i {
+  background: var(--good);
+}
+.val-result.fail,
+.val-result.fail i {
+  color: var(--bad);
+  background: none;
+}
+.val-result.fail i {
+  background: var(--bad);
+}
+.val-wait {
+  padding: 18px 0;
+}
+.val-summary {
+  margin: 22px 0 0;
+  color: var(--ink-soft);
+}
+
+/* ---------- Act VI: the simulator's features ---------- */
+.features {
+  padding: 16svh var(--gutter) 22svh;
+}
+.feat-head {
+  margin-bottom: 44px;
+}
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+.feat-card {
+  display: grid;
+  grid-template-rows: 150px auto 1fr;
+  gap: 14px;
+  padding: 22px;
+  border: 1px solid var(--hair);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(14, 18, 34, 0.7), rgba(6, 8, 16, 0.7));
+  backdrop-filter: blur(8px);
+}
+.feat-title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.feat-card .t-body {
+  font-size: 15px;
+}
+.feat-visual {
+  border-radius: 12px;
+  background: radial-gradient(120% 100% at 50% 0%, rgba(90, 120, 200, 0.12), rgba(2, 3, 8, 0));
+}
+.feat-presets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+}
+.feat-presets figure {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+.feat-presets svg {
+  width: 100%;
+  height: 78px;
+  overflow: visible;
+}
+.feat-presets figcaption {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  text-align: center;
+}
+.feat-path {
+  fill: none;
+  stroke: #ffc98a;
+  stroke-width: 1.2;
+  stroke-dasharray: 1;
+  stroke-linejoin: round;
+  opacity: 0.85;
+}
+.feat-warp {
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+.feat-warp span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.feat-warp i {
+  height: 3px;
+  width: calc(10px + var(--i) * 18px);
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255, 201, 138, 0.3), #ffc98a);
+}
+.feat-precision,
+.feat-stats {
+  display: grid;
+  align-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--ink-soft);
+}
+.feat-precision span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.feat-precision i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.feat-precision i.good {
+  background: var(--good);
+}
+.feat-precision i.warn {
+  background: var(--warn);
+}
+.feat-precision i.bad {
+  background: var(--bad);
+}
+.feat-stats {
+  gap: 6px;
+}
+.feat-stats span {
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--hair);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 10px;
+  color: var(--ink-faint);
+}
+.feat-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 56px;
+}
+
+/* ---------- Act VII: the system ---------- */
 .system {
   min-height: 420svh;
   padding: 0 var(--gutter);
@@ -516,7 +780,7 @@ body {
   border-top: 1px solid var(--hair);
 }
 
-/* ---------- Act V: identity ---------- */
+/* ---------- Act VIII: identity ---------- */
 .identity {
   min-height: 440svh;
 }
@@ -683,10 +947,27 @@ body {
 }
 
 /* ---------- Tablet and phone ---------- */
+@media (max-width: 1100px) {
+  .feat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 900px) {
   .law-grid,
-  .mechanism {
+  .mechanism,
+  .threebody {
     grid-template-columns: 1fr;
+  }
+  .threebody {
+    align-content: center;
+    row-gap: 18px;
+  }
+  .tb-captions {
+    min-height: 130px;
+  }
+  .tb-readout {
+    grid-template-columns: repeat(2, auto);
   }
   .law {
     align-items: flex-start;
@@ -704,6 +985,23 @@ body {
 }
 
 @media (max-width: 640px) {
+  .feat-grid {
+    grid-template-columns: 1fr;
+  }
+  .val-row {
+    grid-template-columns: 1fr 1fr auto;
+    gap: 6px 12px;
+  }
+  .val-row > :nth-child(2),
+  .val-row > :nth-child(3) {
+    font-size: 12px;
+  }
+  .val-row .val-name {
+    grid-column: 1 / -1;
+  }
+  .val-head {
+    display: none;
+  }
   .finale-step {
     grid-template-columns: 1fr;
     gap: 2px;
@@ -789,7 +1087,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   /* Everything that is staged by scroll is shown statically, in order. */
   .law-caption,
-  .mech-caption {
+  .mech-caption,
+  .tb-caption {
     grid-area: auto;
     margin-bottom: 14px;
   }

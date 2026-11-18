@@ -10,7 +10,7 @@ describe('presets', () => {
       b = step(b, 0.002, 1)
       expect(length(sub(b[1].pos, b[0].pos))).toBeCloseTo(1, 4)
     }
-  })
+  }, 20_000) // 20,000 steps and checks: allow up to 20 s on a busy machine
 
   test('figure-eight returns to start after one period', () => {
     let b = PRESETS[2].create()

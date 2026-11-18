@@ -4,6 +4,12 @@
 
 ![Three equal stars tracing the Chenciner–Montgomery figure-eight orbit in ORBITAL](docs/figure-eight.jpg)
 
+**The story: [orbital-nbody.vercel.app/story.html](https://orbital-nbody.vercel.app/story.html)**
+
+The story page gives every viewer, whatever their knowledge of physics, a pictorial and visual representation of the maths and physics behind the simulation.
+
+![The opening of the ORBITAL story page: the wordmark beside a live shader Sun](docs/story-hero.jpg)
+
 Orbital is an interactive 2D Newtonian N-body gravity simulator, built from first principles with React and TypeScript and drawn on HTML5 Canvas. It is 2D physics drawn with 3D-style shading. Orbital simulates gravity's effect on celestial bodies (stars and planets) as time changes.
 
 Each body's acceleration at a given time depends on where the other bodies are at that moment. For this reason, the velocity and position change continuously with time. From Newton's law of gravitation, we use the formula for force to get accelerations. Through Velocity Verlet, we take a really small step in time, Δt, which helps us get new positions and velocities, and the process is repeated. Only the acceleration is gotten purely mathematically, so it is exact. The position and velocity are approximated because, as accurate as Velocity Verlet can be, there is a minor accumulation of errors.
@@ -118,6 +124,7 @@ src/
 │  ├─ vec2.ts         2D vector operations
 │  ├─ gravity.ts      pairwise gravitational acceleration (+ softening)
 │  ├─ integrator.ts   Velocity Verlet step
+│  ├─ euler.ts        Euler step, kept for comparison
 │  ├─ energy.ts       total kinetic + potential energy
 │  ├─ momentum.ts     total linear momentum
 │  ├─ presets.ts      starting conditions
@@ -125,7 +132,9 @@ src/
 │  └─ timeWarp.ts     years-per-second → integrator steps
 ├─ render/      Canvas drawing: starfield, shaded bodies, trails
 ├─ components/  React UI: control dock and stats strip
-└─ SimCanvas.tsx  the simulation loop that ties it together
+├─ SimCanvas.tsx  the simulation loop that ties it together
+└─ story/       the story page: 3D scenes, scroll chapters and live checks
+                that run the same physics code
 ```
 
 The physics never imports anything from the rendering or UI code, so it can be tested on its own.
@@ -149,6 +158,8 @@ All in all, what surprised me the most was finding out that there are actually t
 ## Built with
 
 React · TypeScript · Vite · HTML5 Canvas · Vitest
+
+Story page: three.js with React Three Fiber · GSAP and ScrollTrigger · Lenis · KaTeX
 
 ---
 

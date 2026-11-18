@@ -7,6 +7,9 @@ import Scene from './three/Scene'
 import LawSection from './sections/LawSection'
 import MechanismSection from './sections/MechanismSection'
 import SystemSection from './sections/SystemSection'
+import ThreeBodySection from './sections/ThreeBodySection'
+import ValidationSection from './sections/ValidationSection'
+import FeaturesSection from './sections/FeaturesSection'
 import IdentitySection from './sections/IdentitySection'
 import { DUR, EASE, STAGGER, revealLines } from './motion'
 import { reducedMotion, scrollState } from './scrollState'
@@ -101,7 +104,10 @@ export default function StoryApp() {
           <div className="hero-copy">
             <p className="t-label hero-line">Act I · A gravity simulator, built from first principles</p>
             <h1 className="hero-title hero-line">ORBITAL</h1>
-            <p className="hero-sub t-body hero-line">Watching the Netflix series 3 Body Problem fascinated me.</p>
+            <p className="hero-sub t-body hero-line">
+              Watching the Netflix series 3 Body Problem fascinated me. Because of that fascination, I set out to explore
+              gravity and celestial bodies. Hence, ORBITAL was born.
+            </p>
           </div>
           <div className="scroll-cue hero-line" aria-hidden="true">
             <span>Scroll</span>
@@ -123,6 +129,9 @@ export default function StoryApp() {
 
         <LawSection />
         <MechanismSection />
+        <ThreeBodySection />
+        <ValidationSection />
+        <FeaturesSection />
         <SystemSection />
         <IdentitySection />
       </main>
